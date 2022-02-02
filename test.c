@@ -6,7 +6,7 @@
 /*   By: bbordere <bbordere@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/31 15:42:45 by bbordere          #+#    #+#             */
-/*   Updated: 2022/02/01 15:59:27 by bbordere         ###   ########.fr       */
+/*   Updated: 2022/02/02 22:09:11 by bbordere         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <fcntl.h>
+#include <sys/wait.h>
 #include "libft/libft.h"
 
 char	*ft_path(char *cmd, char **env)
@@ -58,56 +59,51 @@ void	ft_exec(char *str, char **env)
 		return ;
 }
 
+void	ft_parent(int *fd, char **av, char **env)
+{
+	int	out;
+
+	out = open(av[4], O_WRONLY | O_CREAT | O_TRUNC, 0777);
+	dup2(out, STDOUT_FILENO);
+	dup2(fd[0], STDIN_FILENO);
+	close(fd[0]);
+	close(fd[1]);
+	ft_exec(av[3], env);
+}
+
+void	ft_child(int *fd, char **av, char **env)
+{
+	int	in;
+
+	in = open(av[1], O_RDONLY);
+	dup2(in, STDIN_FILENO);
+	dup2(fd[1], STDOUT_FILENO);
+	close(fd[0]);
+	close(fd[1]);
+	ft_exec(av[2], env);
+}
+
 int main(int argc, char *argv[], char **env)
 {
 	int	fd[2];
-	int	pid;
+	int	pid1;
+	int	pid2;
 
 	if (pipe(fd) == -1)
 	{
 		printf("ERROR !");
 		exit (1);
 	}
-	pid = fork();
-	if (!argv[1])
-		return 1;
-	ft_exec(argv[1], env);
+	pid1 = fork();
+	if (pid1 == -1)
+		return 2;
+		
+	if (pid1 == 0)
+		ft_child(fd, argv, env);
+	else
+		ft_parent(fd, argv, env);
+	close(fd[0]);
+	close(fd[1]);
+	waitpid(pid1, NULL, 0);
 	return 0;
 }
-
-
-
-/*
-void main(void)
-{
-	int fd[2];
-	int child;
-	char buff[1024];
-
-	if (pipe(fd) == -1)
-	{
-		printf("ERROR !");
-		exit (10);
-	}
-	child = fork();
-	if (child == -1)
-		printf("ERROR FORK");
-	else if (child)
-	{
-		printf("CHILD PROC");
-		close(fd[1]);
-		if (read(fd[0], buff, 1024) < 0)
-			printf("ERROR READING");
-		printf(" >> %s\n", buff);
-		close(fd[0]);
-	}
-	else
-	{
-		printf("PARENT PROC\n");
-		close(fd[0]);
-		if (write(fd[1], DATA, sizeof(DATA)) < 0)
-			printf("ERROR WRITING");
-		close(fd[1]);
-	}
-
-}*/
