@@ -6,7 +6,7 @@
 /*   By: bbordere <bbordere@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/31 15:42:45 by bbordere          #+#    #+#             */
-/*   Updated: 2022/02/09 17:04:37 by bbordere         ###   ########.fr       */
+/*   Updated: 2022/02/10 17:01:05 by bbordere         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,38 @@
 // pipe(fd) == -1 : return ERROR;
 #include "pipex.h"
 
+void	ft_here_doc(char *limiter)
+{
+	int		fd[2];
+	int		pid;
+	char	*line;
+
+	if (pipe(fd) == -1)
+		exit(1);
+	pid = fork();
+	if (pid == -1)
+		ft_error();
+	if (pid == 0)
+	{
+		close(fd[0]);
+		line = get_next_line(0);
+		while (line)
+		{
+			if (ft_strncmp(line, limiter, ft_strlen(limiter)) == 0)
+				exit(EXIT_SUCCESS);
+			write(fd[1], line, ft_strlen(line));
+			line = get_next_line(0);
+		}
+		close(fd[1]);
+	}
+	else
+	{
+		close(fd[1]);
+		dup2(fd[0], STDIN_FILENO);
+		waitpid(pid, NULL, 0);
+	}
+}
+
 void	ft_child(char *cmd, char **env)
 {
 	int	fd[2];
@@ -31,6 +63,8 @@ void	ft_child(char *cmd, char **env)
 	if (pipe(fd) == -1)
 		exit(1);
 	pid = fork();
+	if (pid == -1)
+		ft_error();
 	if (!pid)
 	{
 		close(fd[0]);
@@ -52,11 +86,20 @@ int	main(int ac, char **av, char **env)
 
 	if (ac >= 5)
 	{
-		if (access(av[1], F_OK) != 0)
-			ft_error();
-		in = open(av[1], O_RDONLY, 0777);
-		out = open(av[ac - 1], O_WRONLY | O_CREAT | O_TRUNC, 0777);
-		dup2(in, STDIN_FILENO);
+		if (ft_strncmp(av[1], "here_doc", 8) == 0)
+		{
+			out = ft_open(av[ac - 1], 2);
+			ft_here_doc(av[2]);
+			av++;
+		}
+		else
+		{
+			if (access(av[1], F_OK) != 0)
+				ft_error();
+			in = ft_open(av[1], 0);
+			out = ft_open(av[ac - 1], 1);
+			dup2(in, STDIN_FILENO);
+		}
 		av++;
 		while (*(++av + 2))
 			ft_child(*av, env);

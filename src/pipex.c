@@ -6,7 +6,7 @@
 /*   By: bbordere <bbordere@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/31 15:42:45 by bbordere          #+#    #+#             */
-/*   Updated: 2022/02/09 17:03:18 by bbordere         ###   ########.fr       */
+/*   Updated: 2022/02/10 16:37:36 by bbordere         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,9 @@ void	ft_parent(int *fd, char **av, char **env)
 {
 	int	out;
 
-	out = open(av[4], O_WRONLY | O_CREAT | O_TRUNC, 0777);
+	out = ft_open(av[4], 1);
+	if (out == -1)
+		ft_error();
 	dup2(out, STDOUT_FILENO);
 	dup2(fd[0], STDIN_FILENO);
 	close(fd[0]);
@@ -41,7 +43,9 @@ void	ft_child(int *fd, char **av, char **env)
 
 	if (access(av[1], F_OK) != 0)
 		ft_error();
-	in = open(av[1], O_RDONLY);
+	in = ft_open(av[1], 0);
+	if (in == -1)
+		ft_error();
 	dup2(in, STDIN_FILENO);
 	dup2(fd[1], STDOUT_FILENO);
 	close(fd[0]);

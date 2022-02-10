@@ -6,11 +6,26 @@
 /*   By: bbordere <bbordere@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/09 15:50:47 by bbordere          #+#    #+#             */
-/*   Updated: 2022/02/09 16:29:31 by bbordere         ###   ########.fr       */
+/*   Updated: 2022/02/10 15:57:34 by bbordere         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
+
+int		ft_open(char *filename, int mode)
+{
+	int	file;
+
+	if (mode == 0)
+		file = open(filename, O_RDONLY);
+	else if (mode == 1)
+		file = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	else if (mode == 2)
+		file = open(filename, O_WRONLY | O_CREAT | O_APPEND, 0644);
+	if (file == -1)
+		return (-1);
+	return (file);
+}
 
 void	ft_error(void)
 {
@@ -37,11 +52,13 @@ char	*ft_path(char *cmd, char **env)
 	while (!ft_strnstr(env[i], "PATH", 4))
 		i++;
 	path = ft_split(env[i] + 5, ':');
+	if (!path)
+		return (NULL);
 	i = 0;
 	while (path[i])
 	{
 		path[i] = ft_strjoin(ft_strjoin(path[i], "/"), cmd);
-		if (access(path[i], F_OK) == 0)
+		if (path[i] && access(path[i], F_OK) == 0)
 			return (path[i]);
 		i++;
 	}
@@ -55,6 +72,8 @@ void	ft_exec(char *str, char **env)
 	char	**args;
 
 	args = ft_split(str, ' ');
+	if (!args)
+		ft_error();
 	path = ft_path(args[0], env);
 	if (!path || execve(path, args, env) == -1)
 	{
