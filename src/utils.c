@@ -6,7 +6,7 @@
 /*   By: bbordere <bbordere@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/09 15:50:47 by bbordere          #+#    #+#             */
-/*   Updated: 2022/02/10 15:57:34 by bbordere         ###   ########.fr       */
+/*   Updated: 2022/02/11 15:52:57 by bbordere         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,8 @@ char	*ft_path(char *cmd, char **env)
 	char	**path;
 	int		i;
 
+	if (access(cmd, F_OK | X_OK) == 0)
+		return (cmd);
 	i = 0;
 	while (!ft_strnstr(env[i], "PATH", 4))
 		i++;

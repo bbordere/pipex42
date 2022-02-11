@@ -6,7 +6,7 @@
 /*   By: bbordere <bbordere@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/31 15:42:45 by bbordere          #+#    #+#             */
-/*   Updated: 2022/02/10 17:01:05 by bbordere         ###   ########.fr       */
+/*   Updated: 2022/02/11 15:54:56 by bbordere         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,13 +37,13 @@ void	ft_here_doc(char *limiter)
 	if (pid == 0)
 	{
 		close(fd[0]);
-		line = get_next_line(0);
-		while (line)
+		while (1)
 		{
+			ft_putstr_fd("pipex heredoc> ", 1);
+			line = get_next_line(0);
 			if (ft_strncmp(line, limiter, ft_strlen(limiter)) == 0)
 				exit(EXIT_SUCCESS);
 			write(fd[1], line, ft_strlen(line));
-			line = get_next_line(0);
 		}
 		close(fd[1]);
 	}
@@ -61,10 +61,10 @@ void	ft_child(char *cmd, char **env)
 	int	pid;
 
 	if (pipe(fd) == -1)
-		exit(1);
+		exit(EXIT_FAILURE);
 	pid = fork();
 	if (pid == -1)
-		ft_error();
+		exit(EXIT_FAILURE);
 	if (!pid)
 	{
 		close(fd[0]);
@@ -79,28 +79,43 @@ void	ft_child(char *cmd, char **env)
 	}
 }
 
+void	ft_fork_open(char *filename)
+{
+	int	pid;
+	int	in;
+
+	pid = fork();
+	if (pid == -1)
+		exit(EXIT_FAILURE);
+	if (!pid)
+	{
+		if (access(filename, F_OK) != 0)
+			exit(EXIT_FAILURE);
+		in = ft_open(filename, 0);
+		if (in == -1)
+			exit(EXIT_FAILURE);
+		dup2(in, STDIN_FILENO);
+		close(in);
+	}	
+}
+
 int	main(int ac, char **av, char **env)
 {
-	int	in;
 	int	out;
 
 	if (ac >= 5)
 	{
 		if (ft_strncmp(av[1], "here_doc", 8) == 0)
 		{
-			out = ft_open(av[ac - 1], 2);
 			ft_here_doc(av[2]);
-			av++;
+			out = ft_open(av[ac - 1], 2);
+			av += 2;
 		}
 		else
 		{
-			if (access(av[1], F_OK) != 0)
-				ft_error();
-			in = ft_open(av[1], 0);
+			ft_fork_open(av[1]);
 			out = ft_open(av[ac - 1], 1);
-			dup2(in, STDIN_FILENO);
 		}
-		av++;
 		while (*(++av + 2))
 			ft_child(*av, env);
 		dup2(out, STDOUT_FILENO);
