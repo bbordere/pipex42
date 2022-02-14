@@ -6,7 +6,7 @@
 /*   By: bbordere <bbordere@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/31 15:42:45 by bbordere          #+#    #+#             */
-/*   Updated: 2022/02/14 22:12:02 by bbordere         ###   ########.fr       */
+/*   Updated: 2022/02/14 23:32:29 by bbordere         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,7 @@ void	ft_check_open(char *filename)
 	int	in;
 
 	
-	in = ft_open(filename, 'R');
+	in = ft_open(filename, 'R', 0);
 	if (in == -1)
 		ft_error(filename);
 	dup2(in, STDIN_FILENO);
@@ -115,13 +115,13 @@ int	main(int ac, char **av, char **env)
 		if (ft_strncmp(av[1], "here_doc", 8) == 0)
 		{
 			in = ft_here_doc(av[2]);
-			out = ft_open(av[ac - 1], 'A');
+			out = ft_open(av[ac - 1], 'A', 0);
 			i++;
 		}
 		else
 		{
-			in = ft_open(av[1], 'R');
-			out = ft_open(av[ac - 1], 'T');
+			in = ft_open(av[1], 'R', 1);
+			out = ft_open(av[ac - 1], 'T', 0);
 		}		
 		dup2(in, STDIN_FILENO);
 		dup2(out, STDOUT_FILENO);

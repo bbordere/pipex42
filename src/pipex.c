@@ -6,7 +6,7 @@
 /*   By: bbordere <bbordere@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/31 15:42:45 by bbordere          #+#    #+#             */
-/*   Updated: 2022/02/14 16:49:47 by bbordere         ###   ########.fr       */
+/*   Updated: 2022/02/14 23:37:05 by bbordere         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void	ft_parent(int *fd, char **av, char **env)
 {
 	int	out;
 
-	out = ft_open(av[4], 1);
+	out = ft_open(av[4], 'T', 0);
 	if (out == -1)
 		ft_error("open failed");
 	dup2(out, STDOUT_FILENO);
@@ -43,7 +43,7 @@ void	ft_child(int *fd, char **av, char **env)
 
 	if (access(av[1], F_OK) != 0)
 		ft_error(av[1]);
-	in = ft_open(av[1], 0);
+	in = ft_open(av[1], 'R', 0);
 	if (in == -1)
 		ft_error(av[1]);
 	dup2(in, STDIN_FILENO);
