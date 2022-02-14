@@ -6,7 +6,7 @@
 /*   By: bbordere <bbordere@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/31 15:42:45 by bbordere          #+#    #+#             */
-/*   Updated: 2022/02/11 15:53:02 by bbordere         ###   ########.fr       */
+/*   Updated: 2022/02/14 16:49:47 by bbordere         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void	ft_parent(int *fd, char **av, char **env)
 
 	out = ft_open(av[4], 1);
 	if (out == -1)
-		ft_error();
+		ft_error("open failed");
 	dup2(out, STDOUT_FILENO);
 	dup2(fd[0], STDIN_FILENO);
 	close(fd[0]);
@@ -42,10 +42,10 @@ void	ft_child(int *fd, char **av, char **env)
 	int	in;
 
 	if (access(av[1], F_OK) != 0)
-		ft_error();
+		ft_error(av[1]);
 	in = ft_open(av[1], 0);
 	if (in == -1)
-		ft_error();
+		ft_error(av[1]);
 	dup2(in, STDIN_FILENO);
 	dup2(fd[1], STDOUT_FILENO);
 	close(fd[0]);
@@ -53,7 +53,7 @@ void	ft_child(int *fd, char **av, char **env)
 	ft_exec(av[2], env);
 }
 
-int main(int ac, char **av, char **env)
+int	main(int ac, char **av, char **env)
 {
 	int	fd[2];
 	int	pid;
@@ -61,10 +61,10 @@ int main(int ac, char **av, char **env)
 	if (ac == 5)
 	{
 		if (pipe(fd) == -1)
-			ft_error();
+			ft_error("pipe failed");
 		pid = fork();
 		if (pid == -1)
-			ft_error();
+			ft_error("fork");
 		if (!pid)
 			ft_child(fd, av, env);
 		else

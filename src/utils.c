@@ -6,13 +6,13 @@
 /*   By: bbordere <bbordere@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/09 15:50:47 by bbordere          #+#    #+#             */
-/*   Updated: 2022/02/11 15:52:57 by bbordere         ###   ########.fr       */
+/*   Updated: 2022/02/14 14:52:01 by bbordere         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-int		ft_open(char *filename, int mode)
+int	ft_open(char *filename, int mode)
 {
 	int	file;
 
@@ -27,9 +27,9 @@ int		ft_open(char *filename, int mode)
 	return (file);
 }
 
-void	ft_error(void)
+void	ft_error(char *str)
 {
-	perror("pipex");
+	perror(str);
 	exit(EXIT_FAILURE);
 }
 
@@ -37,9 +37,12 @@ void	ft_free(char **tab)
 {
 	int	i;
 
-	i = -1;
-	while (tab[++i])
-		free(tab[i]);
+	if (tab)
+	{
+		i = -1;
+		while (tab[++i])
+			free(tab[i]);
+	}
 	free(tab);
 }
 
@@ -75,11 +78,11 @@ void	ft_exec(char *str, char **env)
 
 	args = ft_split(str, ' ');
 	if (!args)
-		ft_error();
+		ft_error("split");
 	path = ft_path(args[0], env);
 	if (!path || execve(path, args, env) == -1)
 	{
 		ft_free(args);
-		ft_error();
+		ft_error("path");
 	}
 }

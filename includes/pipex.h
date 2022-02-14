@@ -6,7 +6,7 @@
 /*   By: bbordere <bbordere@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/09 14:26:21 by bbordere          #+#    #+#             */
-/*   Updated: 2022/02/10 14:00:24 by bbordere         ###   ########.fr       */
+/*   Updated: 2022/02/14 13:48:36 by bbordere         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 # include "../libft/libft.h"
 # include <string.h>
 
-void	ft_error(void);
+void	ft_error(char *str);
 void	ft_free(char **tab);
 char	*ft_path(char *cmd, char **env);
 void	ft_exec(char *str, char **env);

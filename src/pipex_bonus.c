@@ -6,7 +6,7 @@
 /*   By: bbordere <bbordere@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/31 15:42:45 by bbordere          #+#    #+#             */
-/*   Updated: 2022/02/11 15:54:56 by bbordere         ###   ########.fr       */
+/*   Updated: 2022/02/14 16:49:48 by bbordere         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,29 +23,39 @@
 // pipe(fd) == -1 : return ERROR;
 #include "pipex.h"
 
+void	ft_get_doc(char *limiter, int *fd)
+{
+	char	*line;
+
+	while (1)
+	{
+		ft_putstr_fd("pipex heredoc> ", 1);
+		line = get_next_line(0);
+		if (ft_strncmp(line, limiter, ft_strlen(limiter)) == 0)
+		{
+			free(line);
+			close(fd[1]);
+			exit(EXIT_SUCCESS);
+		}
+		write(fd[1], line, ft_strlen(line));
+		free(line);
+	}
+}
+
 void	ft_here_doc(char *limiter)
 {
 	int		fd[2];
 	int		pid;
-	char	*line;
 
 	if (pipe(fd) == -1)
 		exit(1);
 	pid = fork();
 	if (pid == -1)
-		ft_error();
+		ft_error("fork");
 	if (pid == 0)
 	{
 		close(fd[0]);
-		while (1)
-		{
-			ft_putstr_fd("pipex heredoc> ", 1);
-			line = get_next_line(0);
-			if (ft_strncmp(line, limiter, ft_strlen(limiter)) == 0)
-				exit(EXIT_SUCCESS);
-			write(fd[1], line, ft_strlen(line));
-		}
-		close(fd[1]);
+		ft_get_doc(limiter, fd);
 	}
 	else
 	{
@@ -79,24 +89,17 @@ void	ft_child(char *cmd, char **env)
 	}
 }
 
-void	ft_fork_open(char *filename)
+void	ft_check_open(char *filename)
 {
-	int	pid;
 	int	in;
 
-	pid = fork();
-	if (pid == -1)
-		exit(EXIT_FAILURE);
-	if (!pid)
-	{
-		if (access(filename, F_OK) != 0)
-			exit(EXIT_FAILURE);
-		in = ft_open(filename, 0);
-		if (in == -1)
-			exit(EXIT_FAILURE);
-		dup2(in, STDIN_FILENO);
-		close(in);
-	}	
+	if (access(filename, F_OK) != 0)
+		ft_error(filename);
+	in = ft_open(filename, 0);
+	if (in == -1)
+		ft_error(filename);
+	dup2(in, STDIN_FILENO);
+	close(in);
 }
 
 int	main(int ac, char **av, char **env)
@@ -113,8 +116,9 @@ int	main(int ac, char **av, char **env)
 		}
 		else
 		{
-			ft_fork_open(av[1]);
+			ft_check_open(av[1]);
 			out = ft_open(av[ac - 1], 1);
+			av++;
 		}
 		while (*(++av + 2))
 			ft_child(*av, env);
