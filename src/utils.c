@@ -6,24 +6,30 @@
 /*   By: bbordere <bbordere@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/09 15:50:47 by bbordere          #+#    #+#             */
-/*   Updated: 2022/02/14 14:52:01 by bbordere         ###   ########.fr       */
+/*   Updated: 2022/02/14 22:12:48 by bbordere         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-int	ft_open(char *filename, int mode)
+int	ft_open(char *filename, char mode)
 {
 	int	file;
 
-	if (mode == 0)
-		file = open(filename, O_RDONLY);
-	else if (mode == 1)
+	if (mode == 'R')
+	{
+		if (access(filename, F_OK) == 0)
+			file = open(filename, O_RDONLY);
+		else
+		{
+			perror(filename);
+			return (STDIN_FILENO);
+		}
+	}
+	else if (mode == 'T')
 		file = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	else if (mode == 2)
+	else if (mode == 'A')
 		file = open(filename, O_WRONLY | O_CREAT | O_APPEND, 0644);
-	if (file == -1)
-		return (-1);
 	return (file);
 }
 
@@ -80,9 +86,15 @@ void	ft_exec(char *str, char **env)
 	if (!args)
 		ft_error("split");
 	path = ft_path(args[0], env);
-	if (!path || execve(path, args, env) == -1)
+	if (!path)
 	{
 		ft_free(args);
 		ft_error("path");
+	}
+	if (execve(path, args, env) == 1)
+	{
+		free(path);
+		ft_free(args);
+		exit(127);
 	}
 }

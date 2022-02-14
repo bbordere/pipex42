@@ -6,7 +6,7 @@
 /*   By: bbordere <bbordere@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/31 15:42:45 by bbordere          #+#    #+#             */
-/*   Updated: 2022/02/14 16:49:48 by bbordere         ###   ########.fr       */
+/*   Updated: 2022/02/14 22:12:02 by bbordere         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ void	ft_get_doc(char *limiter, int *fd)
 	}
 }
 
-void	ft_here_doc(char *limiter)
+int	ft_here_doc(char *limiter)
 {
 	int		fd[2];
 	int		pid;
@@ -60,12 +60,12 @@ void	ft_here_doc(char *limiter)
 	else
 	{
 		close(fd[1]);
-		dup2(fd[0], STDIN_FILENO);
-		waitpid(pid, NULL, 0);
+		waitpid(pid, NULL, 0);		
 	}
+	return (fd[0]);
 }
 
-void	ft_child(char *cmd, char **env)
+void	ft_child(char *cmd, char **env, int in)
 {
 	int	fd[2];
 	int	pid;
@@ -79,6 +79,8 @@ void	ft_child(char *cmd, char **env)
 	{
 		close(fd[0]);
 		dup2(fd[1], STDOUT_FILENO);
+		if (in == STDIN_FILENO)
+			exit(EXIT_FAILURE);
 		ft_exec(cmd, env);
 	}
 	else
@@ -93,9 +95,8 @@ void	ft_check_open(char *filename)
 {
 	int	in;
 
-	if (access(filename, F_OK) != 0)
-		ft_error(filename);
-	in = ft_open(filename, 0);
+	
+	in = ft_open(filename, 'R');
 	if (in == -1)
 		ft_error(filename);
 	dup2(in, STDIN_FILENO);
@@ -104,25 +105,30 @@ void	ft_check_open(char *filename)
 
 int	main(int ac, char **av, char **env)
 {
+	int	in;
 	int	out;
+	int	i;
 
 	if (ac >= 5)
 	{
+		i = 2;
 		if (ft_strncmp(av[1], "here_doc", 8) == 0)
 		{
-			ft_here_doc(av[2]);
-			out = ft_open(av[ac - 1], 2);
-			av += 2;
+			in = ft_here_doc(av[2]);
+			out = ft_open(av[ac - 1], 'A');
+			i++;
 		}
 		else
 		{
-			ft_check_open(av[1]);
-			out = ft_open(av[ac - 1], 1);
-			av++;
-		}
-		while (*(++av + 2))
-			ft_child(*av, env);
+			in = ft_open(av[1], 'R');
+			out = ft_open(av[ac - 1], 'T');
+		}		
+		dup2(in, STDIN_FILENO);
 		dup2(out, STDOUT_FILENO);
-		ft_exec(*av, env);
+		ft_child(av[i], env, in);
+		while (++i < ac - 2)
+			ft_child(av[i], env, STDOUT_FILENO);
+		ft_exec(av[i], env);
 	}
+	return (1);
 }
