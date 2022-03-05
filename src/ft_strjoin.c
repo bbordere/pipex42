@@ -10,7 +10,46 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "pipex.h"
+
+char	*ft_strdup(const char *source)
+{
+	char	*dest;
+	size_t	i;
+
+	dest = malloc((ft_strlen(source) + 1) * sizeof(char));
+	if (!dest)
+		return (NULL);
+	i = 0;
+	while (source[i])
+	{
+		dest[i] = source[i];
+		i++;
+	}
+	dest[i] = '\0';
+	return (dest);
+}
+
+void	*ft_memcpy(void *dst, const void *src, size_t n)
+{
+	unsigned char	*source;
+	unsigned char	*dest;
+	size_t			i;
+
+	source = (unsigned char *) src;
+	dest = (unsigned char *) dst;
+	i = 0;
+	if (!dst && !src)
+		return (NULL);
+	if (n == 0)
+		return (dst);
+	while (n--)
+	{
+		dest[i] = source[i];
+		i++;
+	}
+	return (dst);
+}
 
 char	*ft_strjoin(char *s1, char *s2)
 {

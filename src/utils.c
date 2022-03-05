@@ -6,7 +6,7 @@
 /*   By: bbordere <bbordere@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/09 15:50:47 by bbordere          #+#    #+#             */
-/*   Updated: 2022/02/14 23:39:49 by bbordere         ###   ########.fr       */
+/*   Updated: 2022/03/05 20:31:52 by bbordere         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,8 +91,9 @@ void	ft_exec(char *str, char **env)
 	path = ft_path(args[0], env);
 	if (!path)
 	{
+		perror(args[0]);
 		ft_free(args);
-		ft_error("path");
+		exit(EXIT_FAILURE);
 	}
 	if (execve(path, args, env) == -1)
 	{

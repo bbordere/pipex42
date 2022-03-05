@@ -6,21 +6,10 @@
 /*   By: bbordere <bbordere@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/31 15:42:45 by bbordere          #+#    #+#             */
-/*   Updated: 2022/02/14 23:32:29 by bbordere         ###   ########.fr       */
+/*   Updated: 2022/03/05 20:35:17 by bbordere         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-// < file1 cmd1 | cmd2 > file2 :
-// read content of  files1
-// send it to cmd1
-// send cmd1's output to cmd2
-// write cmd2's output in file2
-
-// file1 = av[1], cmd1 = av[2], cmd2 = av[3], file2 = av[4]
-// fd[2] : fd[0] = input (reading) fd[1] = output (writing)
-// child read ||  parent write
-
-// pipe(fd) == -1 : return ERROR;
 #include "pipex.h"
 
 void	ft_get_doc(char *limiter, int *fd)
@@ -29,7 +18,7 @@ void	ft_get_doc(char *limiter, int *fd)
 
 	while (1)
 	{
-		ft_putstr_fd("pipex heredoc> ", 1);
+		write(1, "pipex heredoc> ", 15);
 		line = get_next_line(0);
 		if (ft_strncmp(line, limiter, ft_strlen(limiter)) == 0)
 		{
@@ -60,7 +49,7 @@ int	ft_here_doc(char *limiter)
 	else
 	{
 		close(fd[1]);
-		waitpid(pid, NULL, 0);		
+		waitpid(pid, NULL, 0);
 	}
 	return (fd[0]);
 }
@@ -95,7 +84,6 @@ void	ft_check_open(char *filename)
 {
 	int	in;
 
-	
 	in = ft_open(filename, 'R', 0);
 	if (in == -1)
 		ft_error(filename);
@@ -109,26 +97,25 @@ int	main(int ac, char **av, char **env)
 	int	out;
 	int	i;
 
-	if (ac >= 5)
+	if (!env || ac < 5)
+		exit(EXIT_FAILURE);
+	i = 2;
+	if (ft_strncmp(av[1], "here_doc", 8) == 0)
 	{
-		i = 2;
-		if (ft_strncmp(av[1], "here_doc", 8) == 0)
-		{
-			in = ft_here_doc(av[2]);
-			out = ft_open(av[ac - 1], 'A', 0);
-			i++;
-		}
-		else
-		{
-			in = ft_open(av[1], 'R', 1);
-			out = ft_open(av[ac - 1], 'T', 0);
-		}		
-		dup2(in, STDIN_FILENO);
-		dup2(out, STDOUT_FILENO);
-		ft_child(av[i], env, in);
-		while (++i < ac - 2)
-			ft_child(av[i], env, STDOUT_FILENO);
-		ft_exec(av[i], env);
+		in = ft_here_doc(av[2]);
+		out = ft_open(av[ac - 1], 'A', 0);
+		i++;
 	}
+	else
+	{
+		in = ft_open(av[1], 'R', 1);
+		out = ft_open(av[ac - 1], 'T', 0);
+	}		
+	dup2(in, STDIN_FILENO);
+	dup2(out, STDOUT_FILENO);
+	ft_child(av[i], env, in);
+	while (++i < ac - 2)
+		ft_child(av[i], env, STDOUT_FILENO);
+	ft_exec(av[i], env);
 	return (1);
 }

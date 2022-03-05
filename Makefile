@@ -6,7 +6,7 @@
 #    By: bbordere <bbordere@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/02/09 14:22:55 by bbordere          #+#    #+#              #
-#    Updated: 2022/02/10 16:35:40 by bbordere         ###   ########.fr        #
+#    Updated: 2022/03/05 20:35:28 by bbordere         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,9 +16,9 @@ INCLUDES = includes/
 
 CFLAGS = -Wall -Wextra -Werror -I $(INCLUDES)
 
-FILES = pipex.c utils.c
+FILES = pipex.c utils.c ft_strjoin.c ft_split.c get_next_line.c utils_ft.c
 
-FILES_BONUS = pipex_bonus.c utils.c
+FILES_BONUS = pipex_bonus.c utils.c ft_strjoin.c ft_split.c get_next_line.c utils_ft.c
 
 SRCS = $(addprefix src/, $(FILES))
 
@@ -31,12 +31,8 @@ OBJS_BONUS = $(SRCS_BONUS:.c=.o)
 NAME = pipex
 
 $(NAME): $(OBJS)
-
-	@ printf '\033[0;33mCompiling Libft\033[0m\n'
-	@ $(MAKE) -s all -C libft
-	@ printf '\033[0;32mLibft compiled sucessfully !\033[0m\n'
 	@ printf '\033[0;33mCompiling pipex\033[0m\n'
-	@ ${CC} ${CFLAGS} $(OBJS) libft/libft.a -o ${NAME} 
+	@ ${CC} ${CFLAGS} $(OBJS) -o ${NAME} 
 	@ printf '\033[0;32mpipex compiled sucessfully !\033[0m\n'
 
 all: $(NAME)
@@ -44,20 +40,15 @@ all: $(NAME)
 clean:
 	@ rm -f $(OBJS)
 	@ rm -f $(OBJS_BONUS)
-	@ $(MAKE) -s clean -C libft
 	@ printf '\033[0;32mclean done\033[0m\n'
 
 fclean: clean
 	@ rm -f ${NAME}
-	@ $(MAKE) -s fclean -C libft
 	@ printf '\033[0;32mfclean done\033[0m\n'
 
 bonus: $(OBJS_BONUS)
-	@ printf '\033[0;33mCompiling Libft\033[0m\n'
-	@ $(MAKE) -s all -C libft
-	@ printf '\033[0;32mLibft compiled sucessfully !\033[0m\n'
 	@ printf '\033[0;33mCompiling pipex\033[0m\n'
-	@ ${CC} ${CFLAGS} $(OBJS_BONUS) libft/libft.a -o ${NAME} 
+	@ ${CC} ${CFLAGS} $(OBJS_BONUS) -o ${NAME}
 	@ printf '\033[0;32mpipex compiled sucessfully !\033[0m\n'
 
 re: fclean all
