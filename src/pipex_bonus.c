@@ -6,7 +6,7 @@
 /*   By: bbordere <bbordere@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/31 15:42:45 by bbordere          #+#    #+#             */
-/*   Updated: 2022/03/05 20:35:17 by bbordere         ###   ########.fr       */
+/*   Updated: 2022/04/03 18:49:21 by bbordere         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,7 @@ int	main(int ac, char **av, char **env)
 	int	out;
 	int	i;
 
-	if (!env || ac < 5)
+	if (!env || !*env || ac < 5)
 		exit(EXIT_FAILURE);
 	i = 2;
 	if (ft_strncmp(av[1], "here_doc", 8) == 0)

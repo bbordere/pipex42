@@ -6,7 +6,7 @@
 /*   By: bbordere <bbordere@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/31 15:42:45 by bbordere          #+#    #+#             */
-/*   Updated: 2022/03/05 20:35:22 by bbordere         ###   ########.fr       */
+/*   Updated: 2022/04/03 18:52:22 by bbordere         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ int	main(int ac, char **av, char **env)
 	int	fd[2];
 	int	pid;
 
-	if (!env)
+	if (!env || !*env)
 		exit(EXIT_FAILURE);
 	if (ac == 5)
 	{

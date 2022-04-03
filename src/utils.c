@@ -6,13 +6,13 @@
 /*   By: bbordere <bbordere@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/09 15:50:47 by bbordere          #+#    #+#             */
-/*   Updated: 2022/03/05 20:31:52 by bbordere         ###   ########.fr       */
+/*   Updated: 2022/04/03 18:50:33 by bbordere         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-int	ft_open(char *filename, char mode, int here_doc)
+int	ft_open(char *filename, char mode, int infile)
 {
 	int	file;
 
@@ -23,7 +23,7 @@ int	ft_open(char *filename, char mode, int here_doc)
 		else
 		{
 			perror(filename);
-			if (here_doc == 1)
+			if (infile == 1)
 				return (STDIN_FILENO);
 			else
 				exit(EXIT_FAILURE);
