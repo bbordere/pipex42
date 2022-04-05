@@ -6,7 +6,7 @@
 /*   By: bbordere <bbordere@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/09 15:50:47 by bbordere          #+#    #+#             */
-/*   Updated: 2022/04/03 18:50:33 by bbordere         ###   ########.fr       */
+/*   Updated: 2022/04/06 00:16:15 by bbordere         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,9 +50,11 @@ void	ft_free(char **tab)
 	{
 		i = -1;
 		while (tab[++i])
-			free(tab[i]);
+			if (tab[i])
+				free(tab[i]);
+		free(tab);
+		tab = NULL;
 	}
-	free(tab);
 }
 
 char	*ft_path(char *cmd, char **env)
@@ -95,9 +97,8 @@ void	ft_exec(char *str, char **env)
 		ft_free(args);
 		exit(EXIT_FAILURE);
 	}
-	if (execve(path, args, env) == -1)
+	else if (execve(path, args, env) == -1)
 	{
-		free(path);
 		ft_free(args);
 		exit(127);
 	}
