@@ -6,7 +6,7 @@
 #    By: bbordere <bbordere@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/02/09 14:22:55 by bbordere          #+#    #+#              #
-#    Updated: 2022/04/06 14:02:09 by bbordere         ###   ########.fr        #
+#    Updated: 2022/04/06 14:08:10 by bbordere         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -49,9 +49,9 @@ fclean: clean
 	@ printf '\033[0;32mfclean done\033[0m\n'
 
 bonus: $(OBJS_BONUS)
-	@ printf '\033[0;33mCompiling pipex\033[0m\n'
+	@ printf '\033[0;33mCompiling pipex_bonus\033[0m\n'
 	@ $(CC) $(CFLAGS) $(OBJS_BONUS) -o $(NAME_BONUS)
-	@ printf '\033[0;32mpipex compiled sucessfully !\033[0m\n'
+	@ printf '\033[0;32mpipex_bonus compiled sucessfully !\033[0m\n'
 
 re: fclean all
 
