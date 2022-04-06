@@ -6,7 +6,7 @@
 /*   By: bbordere <bbordere@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/31 15:42:45 by bbordere          #+#    #+#             */
-/*   Updated: 2022/04/03 18:52:22 by bbordere         ###   ########.fr       */
+/*   Updated: 2022/04/06 11:51:17 by bbordere         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ void	ft_parent(int *fd, char **av, char **env)
 	close(fd[0]);
 	close(fd[1]);
 	ft_exec(av[3], env);
+	wait(NULL);
 }
 
 void	ft_child(int *fd, char **av, char **env)
