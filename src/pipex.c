@@ -6,7 +6,7 @@
 /*   By: bbordere <bbordere@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/31 15:42:45 by bbordere          #+#    #+#             */
-/*   Updated: 2022/04/07 11:03:37 by bbordere         ###   ########.fr       */
+/*   Updated: 2022/04/07 15:11:57 by bbordere         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ void	ft_parent(int *fd, char **av, char **env)
 	dup2(fd[0], STDIN_FILENO);
 	close(fd[0]);
 	close(fd[1]);
+	close(out);
 	ft_exec(av[3], env);
 	wait(NULL);
 }
@@ -40,6 +41,7 @@ void	ft_child(int *fd, char **av, char **env)
 	dup2(fd[1], STDOUT_FILENO);
 	close(fd[0]);
 	close(fd[1]);
+	close(in);
 	ft_exec(av[2], env);
 }
 
@@ -48,21 +50,18 @@ int	main(int ac, char **av, char **env)
 	int	fd[2];
 	int	pid;
 
-	if (!env || !*env || ac != 5)
-		exit(EXIT_FAILURE);
-	if (ac == 5)
-	{
-		if (pipe(fd) == -1)
-			ft_error("pipe failed");
-		pid = fork();
-		if (pid == -1)
-			ft_error("fork");
-		if (!pid)
-			ft_child(fd, av, env);
-		else
-			ft_parent(fd, av, env);
-		close(fd[0]);
-		close(fd[1]);
-		waitpid(pid, NULL, 0);
-	}
+	if (ac != 5)
+		return (printf("Wrong number of arguments !\n"), 1);
+	if (pipe(fd) == -1)
+		ft_error("pipe failed");
+	pid = fork();
+	if (pid == -1)
+		ft_error("fork");
+	if (!pid)
+		ft_child(fd, av, env);
+	else
+		ft_parent(fd, av, env);
+	close(fd[0]);
+	close(fd[1]);
+	waitpid(pid, NULL, 0);
 }

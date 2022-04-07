@@ -6,7 +6,7 @@
 /*   By: bbordere <bbordere@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/31 15:42:45 by bbordere          #+#    #+#             */
-/*   Updated: 2022/04/07 11:09:34 by bbordere         ###   ########.fr       */
+/*   Updated: 2022/04/07 15:04:35 by bbordere         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,8 @@ void	ft_get_doc(char *limiter, int *fd)
 		line = get_next_line(0);
 		if (!line)
 			break ;
-		if (!ft_strncmp(line, limiter, ft_strlen(limiter)))
+		line = ft_strjoin(line, "\n");
+		if (!ft_strncmp(line, limiter, ft_strlen(line)))
 		{
 			free(line);
 			close(fd[1]);
