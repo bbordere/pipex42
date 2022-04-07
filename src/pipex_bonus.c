@@ -6,7 +6,7 @@
 /*   By: bbordere <bbordere@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/31 15:42:45 by bbordere          #+#    #+#             */
-/*   Updated: 2022/04/06 14:33:07 by bbordere         ###   ########.fr       */
+/*   Updated: 2022/04/07 11:09:34 by bbordere         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void	ft_get_doc(char *limiter, int *fd)
 		write(0, "pipex heredoc> ", 15);
 		line = get_next_line(0);
 		if (!line)
-			break;
+			break ;
 		if (!ft_strncmp(line, limiter, ft_strlen(limiter)))
 		{
 			free(line);
