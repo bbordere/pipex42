@@ -69,3 +69,9 @@ char	*ft_strjoin(char *s1, char *s2)
 		free(s1);
 	return (s3);
 }
+
+void	ft_close(int fd1, int fd2)
+{
+	close(fd1);
+	close(fd2);
+}

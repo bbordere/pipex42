@@ -6,7 +6,7 @@
 /*   By: bbordere <bbordere@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/09 15:50:47 by bbordere          #+#    #+#             */
-/*   Updated: 2022/04/07 15:13:18 by bbordere         ###   ########.fr       */
+/*   Updated: 2022/04/07 17:43:53 by bbordere         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,9 +95,11 @@ void	ft_exec(char *str, char **env)
 	path = ft_path(args[0], env);
 	if (!path)
 	{
-		perror(args[0]);
+		write(2, "pipex: ", 7);
+		write(2, args[0], ft_strlen(args[0]));
+		write(2, ": command not found\n", 20);
 		ft_free(args);
-		exit(EXIT_FAILURE);
+		exit(127);
 	}
 	else if (execve(path, args, env) == -1)
 	{
