@@ -6,13 +6,13 @@
 /*   By: bbordere <bbordere@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/09 15:50:47 by bbordere          #+#    #+#             */
-/*   Updated: 2022/04/07 17:43:53 by bbordere         ###   ########.fr       */
+/*   Updated: 2022/04/23 18:42:32 by bbordere         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-int	ft_open(char *filename, char mode, int infile)
+int	ft_open(char *filename, char mode)
 {
 	int	file;
 
@@ -23,10 +23,7 @@ int	ft_open(char *filename, char mode, int infile)
 		else
 		{
 			perror(filename);
-			if (infile == 1)
-				return (STDIN_FILENO);
-			else
-				exit(EXIT_FAILURE);
+			exit(EXIT_FAILURE);
 		}
 	}
 	else if (mode == 'T')
@@ -36,13 +33,26 @@ int	ft_open(char *filename, char mode, int infile)
 	return (file);
 }
 
-void	ft_error(char *str)
+void	ft_error(char *str, int mode)
 {
-	perror(str);
-	exit(EXIT_FAILURE);
+	if (mode)
+	{	
+		write(2, "pipex: ", 7);
+		write(2, str, ft_strlen(str));
+		write(2, ": command not found\n", 20);
+		if (mode > 2)
+			close(mode);
+		else
+			exit(127);
+	}
+	else
+	{
+		perror(str);
+		exit(EXIT_FAILURE);
+	}
 }
 
-void	ft_free(char **tab)
+void	*ft_free(char **tab)
 {
 	int	i;
 
@@ -55,6 +65,7 @@ void	ft_free(char **tab)
 		free(tab);
 		tab = NULL;
 	}
+	return (NULL);
 }
 
 char	*ft_path(char *cmd, char **env)
@@ -62,6 +73,9 @@ char	*ft_path(char *cmd, char **env)
 	char	**path;
 	int		i;
 
+	i = open(cmd, __O_DIRECTORY);
+	if (i > 0)
+		ft_error(cmd, i);
 	if (access(cmd, F_OK | X_OK) == 0)
 		return (cmd);
 	if (!env || !*env)
@@ -72,16 +86,14 @@ char	*ft_path(char *cmd, char **env)
 	path = ft_split(env[i] + 5, ':');
 	if (!path)
 		return (NULL);
-	i = 0;
-	while (path[i])
+	i = -1;
+	while (path[++i])
 	{
 		path[i] = ft_strjoin(ft_strjoin(path[i], "/"), cmd);
 		if (path[i] && access(path[i], X_OK) == 0)
 			return (path[i]);
-		i++;
 	}
-	ft_free(path);
-	return (NULL);
+	return (ft_free(path));
 }
 
 void	ft_exec(char *str, char **env)
@@ -91,7 +103,7 @@ void	ft_exec(char *str, char **env)
 
 	args = ft_split(str, ' ');
 	if (!args)
-		ft_error("split");
+		ft_error("split", 0);
 	path = ft_path(args[0], env);
 	if (!path)
 	{

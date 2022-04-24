@@ -6,7 +6,7 @@
 #    By: bbordere <bbordere@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/02/09 14:22:55 by bbordere          #+#    #+#              #
-#    Updated: 2022/04/07 18:37:45 by bbordere         ###   ########.fr        #
+#    Updated: 2022/04/23 17:26:31 by bbordere         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@ CC = gcc
 
 INCLUDES = includes/
 
-CFLAGS = -Wall -Wextra -Werror -I $(INCLUDES)
+CFLAGS = -Wall -Wextra -Werror -I $(INCLUDES) -g3 
 
 FILES = pipex.c utils.c ft_strjoin.c ft_split.c get_next_line.c utils_ft.c
 
