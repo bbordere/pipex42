@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex_bonus.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bbordere <bbordere@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/31 15:42:45 by bbordere          #+#    #+#             */
-/*   Updated: 2022/04/23 18:48:31 by bbordere         ###   ########.fr       */
+/*   Updated: 2022/05/05 23:19:30 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,33 @@ int	ft_here_doc(char *limiter)
 	return (fd[0]);
 }
 
-void	ft_child(char *cmd, char **env, int in, int mode)
+void	ft_child(char *cmd, char **env, int i, pid_t *tab)
+{
+	int	fd[2];
+	int	pid;
+
+	if (pipe(fd) == -1)
+		exit(EXIT_FAILURE);
+	pid = fork();
+	if (pid == -1)
+		exit(EXIT_FAILURE);
+	tab[i] = pid;
+	if (!pid)
+	{
+		dup2(fd[1], STDOUT_FILENO);
+		ft_exec(cmd, env);
+		ft_close(fd[0], fd[1]);
+	}
+	else
+	{
+		dup2(fd[0], STDIN_FILENO);
+		ft_close(fd[0], fd[1]);
+	}
+	// if (in != STDOUT_FILENO)
+	// 	close(in);
+}
+
+void	ft_final(char *cmd, char **env, int out)
 {
 	int	fd[2];
 	int	pid;
@@ -71,9 +97,7 @@ void	ft_child(char *cmd, char **env, int in, int mode)
 		exit(EXIT_FAILURE);
 	if (!pid)
 	{
-		dup2(fd[1], STDOUT_FILENO);
-		if (in == STDIN_FILENO)
-			exit(EXIT_FAILURE);
+		dup2(fd[1], out);
 		ft_exec(cmd, env);
 		ft_close(fd[0], fd[1]);
 	}
@@ -81,11 +105,7 @@ void	ft_child(char *cmd, char **env, int in, int mode)
 	{
 		dup2(fd[0], STDIN_FILENO);
 		ft_close(fd[0], fd[1]);
-		if (mode)
-			waitpid(pid, NULL, 0);
 	}
-	if (in != STDOUT_FILENO)
-		close(in);
 }
 
 int	main(int ac, char **av, char **env)
@@ -93,11 +113,12 @@ int	main(int ac, char **av, char **env)
 	int	in;
 	int	out;
 	int	i;
+	pid_t	tab[ac];
 
-	if (!env || !*env || ac < 5)
+	if (ac < 5)
 		exit(EXIT_FAILURE);
-	i = 2;
-	if (ft_strncmp(av[1], "here_doc", ft_strlen(av[1])) == 0)
+	i = 2;	
+	if (!ft_strncmp(av[1], "here_doc", ft_strlen(av[1])))
 	{
 		in = ft_here_doc(av[i++]);
 		out = ft_open(av[ac - 1], 'A');
@@ -109,10 +130,21 @@ int	main(int ac, char **av, char **env)
 	}
 	dup2(in, STDIN_FILENO);
 	dup2(out, STDOUT_FILENO);
+	while (i < ac - 2)
+	{
+		ft_child(av[i], env, i, tab);
+		i++;
+	}
+	ft_final(av[i], env, out);
+	i = 2;
+	while (i < ac - 1)
+	{
+		waitpid(tab[i], NULL, WNOHANG);
+		i++;
+	}
+	wait(NULL);
 	ft_close(in, out);
-	ft_child(av[i], env, in, 0);
-	while (++i < ac - 2)
-		ft_child(av[i], env, STDOUT_FILENO, 1);
-	ft_exec(av[i], env);
-	return (1);
+	return (0);
 }
+
+
