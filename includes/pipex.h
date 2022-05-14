@@ -21,15 +21,36 @@
 # include <fcntl.h>
 # include <sys/wait.h>
 # include <string.h>
-#include <errno.h>
+# include <errno.h>
 
-void	ft_error(char *str, int mode);
+typedef struct s_data
+{
+	int		nb_cmd;
+	int		in;
+	int		out;
+	int		here_doc;
+	char	**cmds;
+	int		**pipes;
+	pid_t	*childs;
+
+}	t_data;
+
+t_data	*ft_init_data(int ac, char **av);
+
 void	*ft_free(char **tab);
 void	ft_close(int fd1, int fd2);
-void	ft_exec(char *str, char **env);
+void	ft_free_data(t_data *data);
+void	ft_error(char *str, int mode);
+void	ft_pipeline(t_data *data, char **env);
+void	ft_exec_last(t_data *data, char **env);
+void	ft_exec_first(t_data *data, char **env);
+void	ft_exec(char *str, char **env, t_data *data);
+
+int		ft_here_doc(char *limiter);
+int		ft_wait_all(t_data *data);
 
 int		ft_strncmp(const char *s1, const char *s2, size_t n);
-int		ft_open(char *filename, char mode);
+int		ft_open(char *filename, char mode, t_data *data);
 
 char	*get_next_line(int fd);
 char	*ft_strdup(const char *source);

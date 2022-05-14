@@ -13,12 +13,12 @@
 CC = gcc
 
 INCLUDES = includes/
+#-Wall -Wextra -Werror
+CFLAGS =  -I $(INCLUDES) -g3 
 
-CFLAGS = -Wall -Wextra -Werror -I $(INCLUDES) -g3 
+FILES = pipex.c utils.c ft_strjoin.c ft_split.c get_next_line.c utils_ft.c data.c exec_pipeline.c here_doc.c
 
-FILES = pipex.c utils.c ft_strjoin.c ft_split.c get_next_line.c utils_ft.c
-
-FILES_BONUS = pipex_bonus.c utils.c ft_strjoin.c ft_split.c get_next_line.c utils_ft.c
+FILES_BONUS = pipex_bonus.c utils.c ft_strjoin.c ft_split.c get_next_line.c utils_ft.c data.c exec_pipeline.c here_doc.c
 
 SRCS = $(addprefix src/, $(FILES))
 

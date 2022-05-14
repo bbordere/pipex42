@@ -12,7 +12,7 @@
 
 #include "pipex.h"
 
-int	ft_open(char *filename, char mode)
+int	ft_open(char *filename, char mode, t_data *data)
 {
 	int	file;
 
@@ -22,6 +22,7 @@ int	ft_open(char *filename, char mode)
 			file = open(filename, O_RDONLY);
 		else
 		{
+			ft_free_data(data);
 			perror(filename);
 			exit(EXIT_FAILURE);
 		}
@@ -96,7 +97,7 @@ char	*ft_path(char *cmd, char **env)
 	return (ft_free(path));
 }
 
-void	ft_exec(char *str, char **env)
+void	ft_exec(char *str, char **env, t_data *data)
 {
 	char	*path;
 	char	**args;
@@ -111,11 +112,13 @@ void	ft_exec(char *str, char **env)
 		write(2, args[0], ft_strlen(args[0]));
 		write(2, ": command not found\n", 20);
 		ft_free(args);
+		ft_free_data(data);
 		exit(127);
 	}
 	else if (execve(path, args, env) == -1)
 	{
 		ft_free(args);
+		ft_free_data(data);
 		exit(127);
 	}
 }
