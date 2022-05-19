@@ -15,11 +15,12 @@
 int	main(int ac, char **av, char **env)
 {
 	t_data	*data;
+	int		ret;
 
 	if (ac < 5)
-		exit(EXIT_FAILURE);
+		return (printf("Wrong number of arguments !\n"), 1);
 	data = ft_init_data(ac, av);
-	ft_pipeline(data, env);
+	ret = ft_pipeline(data, env);
 	ft_free_data(data);
-	return (0);
+	return (ret);
 }

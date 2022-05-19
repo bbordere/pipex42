@@ -15,6 +15,7 @@
 int	main(int ac, char **av, char **env)
 {
 	t_data	*data;
+	int		ret;
 
 	if (ac != 5)
 		return (printf("Wrong number of arguments !\n"), 1);
@@ -23,6 +24,7 @@ int	main(int ac, char **av, char **env)
 		exit(EXIT_FAILURE);
 	ft_exec_first(data, env);
 	ft_exec_last(data, env);
-	ft_wait_all(data);
+	ret = ft_wait_all(data);
 	ft_free_data(data);
+	return (ret);
 }

@@ -89,14 +89,12 @@ int	ft_wait_all(t_data *data)
 		if (WIFEXITED(status))
 			res = WEXITSTATUS(status);
 		else if (WIFSIGNALED(status))
-			res = WTERMSIG(status);
-		else
-			res = 1;
+			res = WTERMSIG(128 + status);
 	}
 	return (res);
 }
 
-void	ft_pipeline(t_data *data, char **env)
+int	ft_pipeline(t_data *data, char **env)
 {
 	ssize_t	i;
 
@@ -105,5 +103,5 @@ void	ft_pipeline(t_data *data, char **env)
 	while (++i < data->nb_cmd - 1)
 		ft_exec_mid(data, env, i);
 	ft_exec_last(data, env);
-	ft_wait_all(data);
+	return (ft_wait_all(data));
 }

@@ -39,6 +39,9 @@ int	**ft_init_pipes(t_data *data)
 	if (!pipes)
 		return (NULL);
 	while (++i < (data->nb_cmd - 1))
+		pipes[i] = NULL;
+	i = -1;
+	while (++i < (data->nb_cmd - 1))
 	{
 		pipes[i] = malloc(sizeof(int) * 2);
 		if (!pipes[i])
@@ -83,6 +86,11 @@ t_data	*ft_init_data(int ac, char **av)
 	if (!data->pipes)
 		return (ft_free_data(data), NULL);
 	ft_init_files(data, ac, av);
+	if (data->in == -1 || data->out == -1)
+	{
+		ft_free_data(data);
+		ft_error("C'est la merde", 0);
+	}
 	data->cmds = ft_init_cmds(data, av);
 	if (!data->cmds)
 		return (ft_free_data(data), NULL);
@@ -95,9 +103,14 @@ void	ft_free_data(t_data *data)
 
 	i = -1;
 	if (data->pipes)
+	{
 		while (++i < data->nb_cmd - 1)
+		{
+			ft_close(data->pipes[i][0], data->pipes[i][1]);
 			free(data->pipes[i]);
-	free(data->pipes);
+		}
+		free(data->pipes);
+	}
 	free(data->childs);
 	if (data->cmds)
 		ft_free(data->cmds);

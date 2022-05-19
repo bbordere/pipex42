@@ -24,7 +24,7 @@ int	ft_open(char *filename, char mode, t_data *data)
 		{
 			ft_free_data(data);
 			perror(filename);
-			exit(EXIT_FAILURE);
+			exit(EXIT_SUCCESS);
 		}
 	}
 	else if (mode == 'T')

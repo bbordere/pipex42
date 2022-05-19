@@ -13,8 +13,8 @@
 CC = gcc
 
 INCLUDES = includes/
-#-Wall -Wextra -Werror
-CFLAGS =  -I $(INCLUDES) -g3 
+
+CFLAGS =  -I $(INCLUDES) -g3 -Wall -Wextra -Werror
 
 FILES = pipex.c utils.c ft_strjoin.c ft_split.c get_next_line.c utils_ft.c data.c exec_pipeline.c here_doc.c
 

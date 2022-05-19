@@ -41,7 +41,7 @@ void	*ft_free(char **tab);
 void	ft_close(int fd1, int fd2);
 void	ft_free_data(t_data *data);
 void	ft_error(char *str, int mode);
-void	ft_pipeline(t_data *data, char **env);
+int		ft_pipeline(t_data *data, char **env);
 void	ft_exec_last(t_data *data, char **env);
 void	ft_exec_first(t_data *data, char **env);
 void	ft_exec(char *str, char **env, t_data *data);
