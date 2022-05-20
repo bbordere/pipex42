@@ -89,7 +89,7 @@ t_data	*ft_init_data(int ac, char **av)
 	if (data->in == -1 || data->out == -1)
 	{
 		ft_free_data(data);
-		ft_error("C'est la merde", 0);
+		ft_error("open failed", 0);
 	}
 	data->cmds = ft_init_cmds(data, av);
 	if (!data->cmds)

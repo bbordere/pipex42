@@ -23,6 +23,7 @@ int	ft_open(char *filename, char mode, t_data *data)
 		else
 		{
 			ft_free_data(data);
+			write(2, "pipex: ", 7);
 			perror(filename);
 			exit(EXIT_SUCCESS);
 		}
