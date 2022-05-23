@@ -12,22 +12,13 @@
 
 #include "pipex.h"
 
-int	ft_open(char *filename, char mode, t_data *data)
+int	ft_open(char *filename, char mode)
 {
 	int	file;
 
+	file = -1;
 	if (mode == 'R')
-	{
-		if (access(filename, F_OK) == 0)
-			file = open(filename, O_RDONLY);
-		else
-		{
-			ft_free_data(data);
-			write(2, "pipex: ", 7);
-			perror(filename);
-			exit(EXIT_SUCCESS);
-		}
-	}
+		file = open(filename, O_RDONLY);
 	else if (mode == 'T')
 		file = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0664);
 	else if (mode == 'A')

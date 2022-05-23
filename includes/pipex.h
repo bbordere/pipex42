@@ -50,7 +50,7 @@ int		ft_here_doc(char *limiter);
 int		ft_wait_all(t_data *data);
 
 int		ft_strncmp(const char *s1, const char *s2, size_t n);
-int		ft_open(char *filename, char mode, t_data *data);
+int		ft_open(char *filename, char mode);
 
 char	*get_next_line(int fd);
 char	*ft_strdup(const char *source);

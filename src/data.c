@@ -19,13 +19,21 @@ void	ft_init_files(t_data *data, int ac, char **av)
 		data->here_doc = 1;
 		data->nb_cmd--;
 		data->in = ft_here_doc(av[2]);
-		data->out = ft_open(av[ac - 1], 'A', data);
+		data->out = ft_open(av[ac - 1], 'A');
 	}
 	else
 	{
 		data->here_doc = 0;
-		data->in = ft_open(av[1], 'R', data);
-		data->out = ft_open(av[ac - 1], 'T', data);
+		data->in = ft_open(av[1], 'R');
+		data->out = ft_open(av[ac - 1], 'T');
+	}
+	if (data->in == -1)
+	{
+		ft_free_data(data);
+		write(2, "pipex: ", 8);
+		write(2, av[1], ft_strlen(av[1]));
+		write(2, ": No such file or directory\n", 28);
+		exit(EXIT_SUCCESS);
 	}
 }
 
@@ -79,6 +87,8 @@ t_data	*ft_init_data(int ac, char **av)
 		return (NULL);
 	data->nb_cmd = ac - 3;
 	data->cmds = NULL;
+	data->in = -1;
+	data->out = -1;
 	data->childs = malloc(sizeof(pid_t) * data->nb_cmd);
 	if (!data->childs)
 		return (free(data), NULL);
@@ -86,7 +96,7 @@ t_data	*ft_init_data(int ac, char **av)
 	if (!data->pipes)
 		return (ft_free_data(data), NULL);
 	ft_init_files(data, ac, av);
-	if (data->in == -1 || data->out == -1)
+	if (data->out == -1)
 	{
 		ft_free_data(data);
 		ft_error("open failed", 0);
@@ -114,5 +124,9 @@ void	ft_free_data(t_data *data)
 	free(data->childs);
 	if (data->cmds)
 		ft_free(data->cmds);
+	if (data->in != -1)
+		close(data->in);
+	if (data->out != -1)
+		close(data->out);
 	free(data);
 }
