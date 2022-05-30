@@ -18,7 +18,7 @@ int	main(int ac, char **av, char **env)
 	int		ret;
 
 	if (ac != 5)
-		return (printf("Wrong number of arguments !\n"), 1);
+		return (write(1, "Wrong number of arguments !\n", 29), 1);
 	data = ft_init_data(ac, av);
 	if (!data)
 		exit(EXIT_FAILURE);
