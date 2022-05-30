@@ -20,9 +20,9 @@ int	ft_open(char *filename, char mode)
 	if (mode == 'R')
 		file = open(filename, O_RDONLY);
 	else if (mode == 'T')
-		file = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0664);
+		file = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	else if (mode == 'A')
-		file = open(filename, O_WRONLY | O_CREAT | O_APPEND, 0664);
+		file = open(filename, O_WRONLY | O_CREAT | O_APPEND, 0644);
 	return (file);
 }
 

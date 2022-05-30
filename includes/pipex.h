@@ -41,16 +41,16 @@ void	*ft_free(char **tab);
 void	ft_close(int fd1, int fd2);
 void	ft_free_data(t_data *data);
 void	ft_error(char *str, int mode);
-int		ft_pipeline(t_data *data, char **env);
 void	ft_exec_last(t_data *data, char **env);
 void	ft_exec_first(t_data *data, char **env);
+void	ft_invalid_files(t_data *data, char **av, int ac);
 void	ft_exec(char *str, char **env, t_data *data);
 
-int		ft_here_doc(char *limiter);
 int		ft_wait_all(t_data *data);
-
-int		ft_strncmp(const char *s1, const char *s2, size_t n);
+int		ft_here_doc(char *limiter);
 int		ft_open(char *filename, char mode);
+int		ft_pipeline(t_data *data, char **env);
+int		ft_strncmp(const char *s1, const char *s2, size_t n);
 
 char	*get_next_line(int fd);
 char	*ft_strdup(const char *source);

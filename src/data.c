@@ -27,14 +27,8 @@ void	ft_init_files(t_data *data, int ac, char **av)
 		data->in = ft_open(av[1], 'R');
 		data->out = ft_open(av[ac - 1], 'T');
 	}
-	if (data->in == -1)
-	{
-		ft_free_data(data);
-		write(2, "pipex: ", 8);
-		write(2, av[1], ft_strlen(av[1]));
-		write(2, ": No such file or directory\n", 28);
-		exit(EXIT_SUCCESS);
-	}
+	if (data->in == -1 || data->out == -1)
+		ft_invalid_files(data, av, ac);
 }
 
 int	**ft_init_pipes(t_data *data)
@@ -96,11 +90,6 @@ t_data	*ft_init_data(int ac, char **av)
 	if (!data->pipes)
 		return (ft_free_data(data), NULL);
 	ft_init_files(data, ac, av);
-	if (data->out == -1)
-	{
-		ft_free_data(data);
-		ft_error("open failed", 0);
-	}
 	data->cmds = ft_init_cmds(data, av);
 	if (!data->cmds)
 		return (ft_free_data(data), NULL);
@@ -114,7 +103,7 @@ void	ft_free_data(t_data *data)
 	i = -1;
 	if (data->pipes)
 	{
-		while (++i < data->nb_cmd - 1)
+		while (++i < data->nb_cmd - 1 + data->here_doc)
 		{
 			ft_close(data->pipes[i][0], data->pipes[i][1]);
 			free(data->pipes[i]);
@@ -128,5 +117,7 @@ void	ft_free_data(t_data *data)
 		close(data->in);
 	if (data->out != -1)
 		close(data->out);
+	if (data->here_doc)
+		unlink(".heredoc");
 	free(data);
 }

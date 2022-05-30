@@ -12,49 +12,47 @@
 
 #include "pipex.h"
 
-void	ft_get_doc(char *limiter, int *fd)
+void	ft_invalid_files(t_data *data, char **av, int ac)
 {
+	if (data->in == -1)
+	{
+		write(2, "pipex: ", 8);
+		write(2, av[1], ft_strlen(av[1]));
+		write(2, ": No such file or directory\n", 28);
+	}
+	if (data->out == -1)
+	{
+		write(2, "pipex: ", 8);
+		perror(av[ac - 1]);
+	}
+	ft_free_data(data);
+	exit(EXIT_SUCCESS);	
+}
+
+int	ft_here_doc(char *limiter)
+{
+	int		fd;
 	char	*line;
 	size_t	len;
 
-	close(fd[0]);
 	len = ft_strlen(limiter);
+	fd = open(".heredoc", O_CREAT | O_WRONLY | O_TRUNC, 0644);
+	if (fd < 0)
+		return (-1);
 	while (1)
 	{
 		write(0, "pipex heredoc> ", 15);
 		line = get_next_line(0);
 		if (!line)
 			break ;
-		if (line[len] == '\n' && !ft_strncmp(line, limiter, len))
+		if (!ft_strncmp(line, limiter, len) && line[len] == '\n')
 		{
 			free(line);
-			close(fd[1]);
-			exit(EXIT_SUCCESS);
+			break ;
 		}
-		write(fd[1], line, ft_strlen(line));
+		write(fd, line, ft_strlen(line));
 		free(line);
 	}
-}
-
-int	ft_here_doc(char *limiter)
-{
-	int		fd[2];
-	int		pid;
-
-	if (pipe(fd) == -1)
-		exit(1);
-	pid = fork();
-	if (pid == -1)
-		ft_error("fork", 0);
-	if (pid == 0)
-	{
-		close(fd[0]);
-		ft_get_doc(limiter, fd);
-	}
-	else
-	{
-		close(fd[1]);
-		wait(NULL);
-	}
-	return (fd[0]);
+	close(fd);
+	return (ft_open(".heredoc", 'R'));
 }
