@@ -26,7 +26,7 @@ void	ft_invalid_files(t_data *data, char **av, int ac)
 		perror(av[ac - 1]);
 	}
 	ft_free_data(data);
-	exit(EXIT_SUCCESS);	
+	exit(EXIT_SUCCESS);
 }
 
 int	ft_here_doc(char *limiter)
